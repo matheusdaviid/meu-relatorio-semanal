@@ -4,50 +4,27 @@ document.addEventListener("DOMContentLoaded", function () {
     const formulario = document.getElementById("relatorioForm");
     const template = document.getElementById("pdfTemplate");
 
-    const campos = {
-        dataInicio: "pdfDataInicio",
-        dataFim: "pdfDataFim",
-        dataEnvio: "pdfDataEnvio",
-        abordagens: "pdfAbordagens",
-        agenciados: "pdfAgenciados",
-        onboarding: "pdfOnboarding",
-        statusOnboarding: "pdfStatusOnboarding",
-        destaques: "pdfDestaques",
-        producao: "pdfProducao",
-        gargalos: "pdfGargalos",
-        riscos: "pdfRiscos",
-        aprovacoes: "pdfAprovacoes",
-        proximosPassos: "pdfProximosPassos"
-    };
-
-    function formatarData(valor) {
-        if (!valor) return "Não informado";
-
-        const [ano, mes, dia] = valor.split("-");
-        return `${dia}/${mes}/${ano}`;
-    }
-
-    function obterValor(id) {
+    function valor(id) {
         return document.getElementById(id).value.trim();
     }
 
-    function preencherTexto(id, valorPadrao = "Não informado") {
-        const elemento = document.getElementById(id);
-        elemento.textContent = valorPadrao;
+    function texto(id, conteudo) {
+        document.getElementById(id).textContent = conteudo;
+    }
+
+    function formatarData(data) {
+        if (!data) return "Não informado";
+        const [ano, mes, dia] = data.split("-");
+        return `${dia}/${mes}/${ano}`;
     }
 
     botao.addEventListener("click", async function () {
-        // Impede cliques repetidos durante a geração.
-        if (botao.disabled) return;
-
-        // Valida todos os campos marcados como obrigatórios no HTML.
         if (!formulario.reportValidity()) return;
 
-        // Confirma se a biblioteca de PDF foi carregada.
         if (typeof html2pdf === "undefined") {
             alert(
-                "A biblioteca de PDF não foi carregada. " +
-                "Verifique sua conexão com a internet e recarregue a página."
+                "A biblioteca PDF não carregou. Verifique sua internet, " +
+                "recarregue a página e tente novamente."
             );
             return;
         }
@@ -56,138 +33,137 @@ document.addEventListener("DOMContentLoaded", function () {
         const textoOriginal = botao.textContent;
         botao.textContent = "GERANDO PDF...";
 
+        let copiaPDF = null;
+
         try {
-            // Copia as informações preenchidas para o template.
-            document.getElementById("pdfDataInicio").textContent =
-                formatarData(obterValor("dataInicio"));
+            // Preenche o relatório com os dados digitados.
+            texto("pdfDataInicio", formatarData(valor("dataInicio")));
+            texto("pdfDataFim", formatarData(valor("dataFim")));
+            texto("pdfDataEnvio", formatarData(valor("dataEnvio")));
 
-            document.getElementById("pdfDataFim").textContent =
-                formatarData(obterValor("dataFim"));
+            texto("pdfAbordagens", valor("abordagens") || "0");
+            texto("pdfAgenciados", valor("agenciados") || "0");
+            texto(
+                "pdfConversao",
+                valor("conversao") ? valor("conversao") + "%" : "0%"
+            );
+            texto("pdfOnboarding", valor("onboarding") || "0");
 
-            document.getElementById("pdfDataEnvio").textContent =
-                formatarData(obterValor("dataEnvio"));
+            texto(
+                "pdfStatusOnboarding",
+                valor("statusOnboarding") ||
+                "Nenhuma observação registrada."
+            );
+            texto("pdfDestaques", valor("destaques") || "Não informado");
+            texto(
+                "pdfProducao",
+                valor("producao") || "Nenhum registro de produção."
+            );
+            texto("pdfGargalos", valor("gargalos") || "Não informado");
+            texto(
+                "pdfRiscos",
+                valor("riscos") || "Nenhum risco identificado."
+            );
+            texto("pdfAprovacoes", valor("aprovacoes") || "Não informado");
+            texto(
+                "pdfProximosPassos",
+                valor("proximosPassos") || "Não informado"
+            );
 
-            document.getElementById("pdfAbordagens").textContent =
-                obterValor("abordagens") || "0";
+            // Remove uma cópia antiga, caso tenha sobrado de uma tentativa.
+            const antiga = document.getElementById("pdfTemplateExportacao");
+            if (antiga) antiga.remove();
 
-            document.getElementById("pdfAgenciados").textContent =
-                obterValor("agenciados") || "0";
-
-            const conversao = obterValor("conversao");
-            document.getElementById("pdfConversao").textContent =
-                conversao ? `${conversao}%` : "0%";
-
-            document.getElementById("pdfOnboarding").textContent =
-                obterValor("onboarding") || "0";
-
-            document.getElementById("pdfStatusOnboarding").textContent =
-                obterValor("statusOnboarding") ||
-                "Nenhuma observação registrada.";
-
-            document.getElementById("pdfDestaques").textContent =
-                obterValor("destaques") || "Não informado";
-
-            document.getElementById("pdfProducao").textContent =
-                obterValor("producao") ||
-                "Nenhum registro de produção.";
-
-            document.getElementById("pdfGargalos").textContent =
-                obterValor("gargalos") || "Não informado";
-
-            document.getElementById("pdfRiscos").textContent =
-                obterValor("riscos") || "Nenhum risco identificado.";
-
-            document.getElementById("pdfAprovacoes").textContent =
-                obterValor("aprovacoes") || "Não informado";
-
-            document.getElementById("pdfProximosPassos").textContent =
-                obterValor("proximosPassos") || "Não informado";
-
-            // Cria uma cópia independente do template para exportação.
-            const copiaPDF = template.cloneNode(true);
+            // Cria uma cópia independente do relatório.
+            copiaPDF = template.cloneNode(true);
             copiaPDF.id = "pdfTemplateExportacao";
 
-            // Torna a cópia renderizável, sem alterar o formulário.
-            copiaPDF.style.setProperty("display", "block", "important");
-            copiaPDF.style.setProperty("position", "absolute");
-            copiaPDF.style.setProperty("left", "-10000px");
-            copiaPDF.style.setProperty("top", "0");
-            copiaPDF.style.setProperty("width", "210mm");
-            copiaPDF.style.setProperty("min-height", "297mm");
-            copiaPDF.style.setProperty("height", "auto");
-            copiaPDF.style.setProperty("padding", "20mm");
-            copiaPDF.style.setProperty("margin", "0");
-            copiaPDF.style.setProperty("box-sizing", "border-box");
-            copiaPDF.style.setProperty("background", "#ffffff");
-            copiaPDF.style.setProperty("color", "#111111");
-            copiaPDF.style.setProperty("overflow", "visible");
+            // Coloca a cópia dentro da área visível do navegador.
+            Object.assign(copiaPDF.style, {
+                display: "block",
+                position: "fixed",
+                left: "0",
+                top: "0",
+                width: "794px",
+                minHeight: "1123px",
+                height: "auto",
+                padding: "75px",
+                margin: "0",
+                boxSizing: "border-box",
+                background: "#ffffff",
+                color: "#111111",
+                overflow: "visible",
+                zIndex: "99999"
+            });
+
+            // Garante que os estilos do relatório sejam aplicados.
+            copiaPDF.querySelectorAll("*").forEach(function (el) {
+                el.style.visibility = "visible";
+            });
 
             document.body.appendChild(copiaPDF);
 
-            // Espera o navegador calcular os estilos antes de capturar.
-            await new Promise(resolve =>
-                requestAnimationFrame(() =>
-                    requestAnimationFrame(resolve)
-                )
-            );
+            // Aguarda a renderização do navegador.
+            await new Promise(resolve => requestAnimationFrame(() =>
+                requestAnimationFrame(resolve)
+            ));
+
+            if (copiaPDF.getBoundingClientRect().width === 0) {
+                throw new Error("O relatório não está sendo renderizado.");
+            }
 
             const nomeArquivo =
-                `SHIFT_Relatorio_Semanal_` +
-                `${obterValor("dataInicio") || "inicio"}_` +
-                `${obterValor("dataFim") || "fim"}.pdf`;
+                "SHIFT_Relatorio_Semanal_" +
+                valor("dataInicio") + "_" +
+                valor("dataFim") + ".pdf";
 
-            const opcoes = {
-                margin: 0,
-                filename: nomeArquivo,
-                image: {
-                    type: "jpeg",
-                    quality: 0.98
-                },
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true,
-                    backgroundColor: "#ffffff",
-                    scrollX: 0,
-                    scrollY: 0
-                },
-                jsPDF: {
-                    unit: "mm",
-                    format: "a4",
-                    orientation: "portrait"
-                },
-                pagebreak: {
-                    mode: ["css", "legacy"],
-                    avoid: [".kpi-card", ".pdf-section",
-                            ".pdf-signature-section"]
-                }
-            };
-
+            // Gera o PDF diretamente, sem abrir a janela de impressão.
             await html2pdf()
-                .set(opcoes)
+                .set({
+                    margin: 0,
+                    filename: nomeArquivo,
+                    image: {
+                        type: "jpeg",
+                        quality: 0.98
+                    },
+                    html2canvas: {
+                        scale: 2,
+                        useCORS: true,
+                        backgroundColor: "#ffffff",
+                        logging: true,
+                        scrollX: 0,
+                        scrollY: 0
+                    },
+                    jsPDF: {
+                        unit: "mm",
+                        format: "a4",
+                        orientation: "portrait"
+                    },
+                    pagebreak: {
+                        mode: ["css", "legacy"],
+                        avoid: [
+                            ".kpi-card",
+                            ".pdf-section",
+                            ".pdf-signature-section"
+                        ]
+                    }
+                })
                 .from(copiaPDF)
                 .save();
 
-            // O formulário permanece preenchido após o download.
             alert("PDF gerado! Confira seus downloads.");
 
-            copiaPDF.remove();
-
         } catch (erro) {
-            console.error("Erro ao gerar o PDF:", erro);
+            console.error("Erro ao gerar PDF:", erro);
 
             alert(
                 "Não foi possível gerar o PDF. " +
-                "Tente novamente com uma conexão estável. " +
-                "Se o erro continuar, abra o Console do navegador " +
-                "para verificar os detalhes."
+                "Abra o Console do navegador (F12) e confira o erro."
             );
 
-            const copiaAntiga =
-                document.getElementById("pdfTemplateExportacao");
-
-            if (copiaAntiga) copiaAntiga.remove();
-
         } finally {
+            if (copiaPDF) copiaPDF.remove();
+
             botao.disabled = false;
             botao.textContent = textoOriginal;
         }
