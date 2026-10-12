@@ -130,9 +130,8 @@ button:active {
    ESTILOS DO PDF (A4)
    ========================================= */
 
-/* O template fica escondido na tela, mas o JS vai clonar ele para gerar o PDF */
 .pdf-container {
-    display: none;
+    display: none; /* Escondido por padrão */
     width: 210mm;
     min-height: 297mm;
     padding: 20mm;
@@ -140,9 +139,12 @@ button:active {
     box-sizing: border-box;
     font-family: 'Segoe UI', Arial, sans-serif;
     color: #111;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9999;
 }
 
-/* O resto do CSS do PDF permanece igual */
 .pdf-header {
     display: flex;
     justify-content: space-between;
