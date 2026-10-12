@@ -1,136 +1,276 @@
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
     const botao = document.getElementById("btnGerarPDF");
     const formulario = document.getElementById("relatorioForm");
     const template = document.getElementById("pdfTemplate");
 
-    function valor(id) {
-        return document.getElementById(id).value.trim();
+    if (!botao || !formulario || !template) {
+        console.error("SHIFT: formulário, botão ou template não encontrado.");
+        return;
     }
 
-    function texto(id, conteudo) {
-        document.getElementById(id).textContent = conteudo;
-    }
+    const obter = id => document.getElementById(id).value.trim();
 
-    function formatarData(data) {
-        if (!data) return "Não informado";
-        const [ano, mes, dia] = data.split("-");
+    const definir = (id, valor) => {
+        document.getElementById(id).textContent = valor;
+    };
+
+    const dataBR = valor => {
+        if (!valor) return "Não informado";
+        const [ano, mes, dia] = valor.split("-");
         return `${dia}/${mes}/${ano}`;
-    }
+    };
 
-    botao.addEventListener("click", async function () {
+    botao.addEventListener("click", async () => {
         if (!formulario.reportValidity()) return;
 
-        if (typeof html2pdf === "undefined") {
+        if (typeof window.html2pdf !== "function") {
             alert(
-                "A biblioteca PDF não carregou. Verifique sua internet, " +
-                "recarregue a página e tente novamente."
+                "A biblioteca de PDF não carregou. " +
+                "Verifique a conexão com a internet e atualize a página."
             );
             return;
         }
 
-        botao.disabled = true;
         const textoOriginal = botao.textContent;
+        botao.disabled = true;
         botao.textContent = "GERANDO PDF...";
 
-        let copiaPDF = null;
+        let janelaPDF = null;
 
         try {
-            // Preenche o relatório com os dados digitados.
-            texto("pdfDataInicio", formatarData(valor("dataInicio")));
-            texto("pdfDataFim", formatarData(valor("dataFim")));
-            texto("pdfDataEnvio", formatarData(valor("dataEnvio")));
+            // 1. Preencher o template com os dados do formulário.
+            definir("pdfDataInicio", dataBR(obter("dataInicio")));
+            definir("pdfDataFim", dataBR(obter("dataFim")));
+            definir("pdfDataEnvio", dataBR(obter("dataEnvio")));
 
-            texto("pdfAbordagens", valor("abordagens") || "0");
-            texto("pdfAgenciados", valor("agenciados") || "0");
-            texto(
+            definir("pdfAbordagens", obter("abordagens") || "0");
+            definir("pdfAgenciados", obter("agenciados") || "0");
+            definir(
                 "pdfConversao",
-                valor("conversao") ? valor("conversao") + "%" : "0%"
+                obter("conversao") ? obter("conversao") + "%" : "0%"
             );
-            texto("pdfOnboarding", valor("onboarding") || "0");
+            definir("pdfOnboarding", obter("onboarding") || "0");
 
-            texto(
+            definir(
                 "pdfStatusOnboarding",
-                valor("statusOnboarding") ||
+                obter("statusOnboarding") ||
                 "Nenhuma observação registrada."
             );
-            texto("pdfDestaques", valor("destaques") || "Não informado");
-            texto(
+            definir("pdfDestaques", obter("destaques") || "Não informado");
+            definir(
                 "pdfProducao",
-                valor("producao") || "Nenhum registro de produção."
+                obter("producao") || "Nenhum registro de produção."
             );
-            texto("pdfGargalos", valor("gargalos") || "Não informado");
-            texto(
+            definir("pdfGargalos", obter("gargalos") || "Não informado");
+            definir(
                 "pdfRiscos",
-                valor("riscos") || "Nenhum risco identificado."
+                obter("riscos") || "Nenhum risco identificado."
             );
-            texto("pdfAprovacoes", valor("aprovacoes") || "Não informado");
-            texto(
+            definir("pdfAprovacoes", obter("aprovacoes") || "Não informado");
+            definir(
                 "pdfProximosPassos",
-                valor("proximosPassos") || "Não informado"
+                obter("proximosPassos") || "Não informado"
             );
 
-            // Remove uma cópia antiga, caso tenha sobrado de uma tentativa.
-            const antiga = document.getElementById("pdfTemplateExportacao");
-            if (antiga) antiga.remove();
+            // 2. Abrir uma janela temporária para renderizar o relatório.
+            // A janela é aberta durante o clique para evitar bloqueio do navegador.
+            janelaPDF = window.open("", "_blank");
 
-            // Cria uma cópia independente do relatório.
-            copiaPDF = template.cloneNode(true);
-            copiaPDF.id = "pdfTemplateExportacao";
-
-            // Coloca a cópia dentro da área visível do navegador.
-            Object.assign(copiaPDF.style, {
-                display: "block",
-                position: "fixed",
-                left: "0",
-                top: "0",
-                width: "794px",
-                minHeight: "1123px",
-                height: "auto",
-                padding: "75px",
-                margin: "0",
-                boxSizing: "border-box",
-                background: "#ffffff",
-                color: "#111111",
-                overflow: "visible",
-                zIndex: "99999"
-            });
-
-            // Garante que os estilos do relatório sejam aplicados.
-            copiaPDF.querySelectorAll("*").forEach(function (el) {
-                el.style.visibility = "visible";
-            });
-
-            document.body.appendChild(copiaPDF);
-
-            // Aguarda a renderização do navegador.
-            await new Promise(resolve => requestAnimationFrame(() =>
-                requestAnimationFrame(resolve)
-            ));
-
-            if (copiaPDF.getBoundingClientRect().width === 0) {
-                throw new Error("O relatório não está sendo renderizado.");
+            if (!janelaPDF) {
+                throw new Error(
+                    "O navegador bloqueou a janela temporária. " +
+                    "Permita pop-ups para este site e tente novamente."
+                );
             }
 
-            const nomeArquivo =
-                "SHIFT_Relatorio_Semanal_" +
-                valor("dataInicio") + "_" +
-                valor("dataFim") + ".pdf";
+            janelaPDF.document.open();
+            janelaPDF.document.write(`
+                <!DOCTYPE html>
+                <html lang="pt-BR">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Relatório SHIFT</title>
+                    <style>
+                        * { box-sizing: border-box; }
+                        html, body {
+                            margin: 0;
+                            padding: 0;
+                            background: #fff;
+                            color: #111;
+                            font-family: "Segoe UI", Arial, sans-serif;
+                        }
+                        body { padding: 20mm; }
+                        .pdf-container {
+                            display: block !important;
+                            width: 100% !important;
+                            min-height: 0 !important;
+                            height: auto !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            position: static !important;
+                            background: #fff !important;
+                            color: #111 !important;
+                            overflow: visible !important;
+                        }
+                        .pdf-header {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: flex-end;
+                            gap: 15px;
+                            border-bottom: 3px solid #090909;
+                            padding-bottom: 10px;
+                            margin-bottom: 25px;
+                        }
+                        .pdf-logo {
+                            font-size: 28px;
+                            font-weight: 300;
+                            letter-spacing: 6px;
+                            color: #090909;
+                        }
+                        .pdf-header-info { text-align: right; }
+                        .pdf-header-info h1 {
+                            font-size: 16px;
+                            margin: 0 0 5px;
+                            color: #710F27;
+                        }
+                        .pdf-header-info p { font-size: 11px; color: #555; }
+                        .pdf-kpi-grid {
+                            display: flex;
+                            gap: 10px;
+                            margin-bottom: 25px;
+                        }
+                        .kpi-card {
+                            flex: 1;
+                            min-width: 0;
+                            border: 1px solid #ddd;
+                            border-top: 4px solid #710F27;
+                            padding: 12px 6px;
+                            text-align: center;
+                            background: #f9f9f9;
+                        }
+                        .kpi-card h4 {
+                            margin: 0 0 8px;
+                            font-size: 9px;
+                            color: #555;
+                        }
+                        .kpi-number {
+                            font-size: 21px;
+                            font-weight: bold;
+                            color: #090909;
+                            margin: 0;
+                        }
+                        .pdf-section {
+                            margin-bottom: 22px;
+                            break-inside: auto;
+                        }
+                        .pdf-section h3 {
+                            font-size: 12px;
+                            color: #fff;
+                            background: #090909;
+                            padding: 8px 12px;
+                            margin-bottom: 12px;
+                            break-after: avoid;
+                        }
+                        .pdf-section p {
+                            font-size: 12px;
+                            line-height: 1.6;
+                            white-space: pre-wrap;
+                            overflow-wrap: anywhere;
+                            color: #333;
+                        }
+                        .pdf-section p strong { color: #710F27; }
+                        .pdf-signature-section {
+                            margin-top: 40px;
+                            margin-bottom: 25px;
+                            text-align: center;
+                            break-inside: avoid;
+                        }
+                        .signature-line {
+                            width: 250px;
+                            height: 1px;
+                            background: #090909;
+                            margin: 0 auto 10px;
+                        }
+                        .signature-info p {
+                            margin: 0;
+                            font-size: 12px;
+                            color: #333;
+                        }
+                        .signature-name {
+                            font-weight: bold;
+                            font-size: 14px;
+                            color: #090909;
+                        }
+                        .signature-role { font-size: 11px; color: #666; }
+                        .pdf-footer {
+                            margin-top: 25px;
+                            border-top: 1px solid #ddd;
+                            padding-top: 12px;
+                            font-size: 10px;
+                            color: #888;
+                            text-align: center;
+                        }
+                        @page { size: A4; margin: 0; }
+                    </style>
+                </head>
+                <body>
+                    <div id="areaRelatorio"></div>
+                </body>
+                </html>
+            `);
+            janelaPDF.document.close();
 
-            // Gera o PDF diretamente, sem abrir a janela de impressão.
-            await html2pdf()
+            // 3. Copiar o template para a janela de exportação.
+            const relatorio = janelaPDF.document.getElementById("areaRelatorio");
+            const copia = janelaPDF.document.importNode(template, true);
+            copia.removeAttribute("id");
+            copia.style.setProperty("display", "block", "important");
+            relatorio.appendChild(copia);
+
+            // 4. Aguardar o navegador calcular dimensões e estilos.
+            await new Promise(resolve =>
+                janelaPDF.requestAnimationFrame(() =>
+                    janelaPDF.requestAnimationFrame(resolve)
+                )
+            );
+
+            await new Promise(resolve => setTimeout(resolve, 300));
+
+            if (!relatorio.textContent.trim()) {
+                throw new Error("O relatório está vazio na página temporária.");
+            }
+
+            const largura = relatorio.getBoundingClientRect().width;
+            const altura = relatorio.getBoundingClientRect().height;
+
+            console.log("SHIFT PDF - dimensões do relatório:", largura, altura);
+
+            if (largura <= 0 || altura <= 0) {
+                throw new Error("O relatório não tem dimensões válidas.");
+            }
+
+            const nome =
+                `SHIFT_Relatorio_Semanal_${obter("dataInicio")}_` +
+                `${obter("dataFim")}.pdf`;
+
+            // 5. Gerar e baixar o PDF.
+            await janelaPDF.html2pdf?.().catch(() => {});
+
+            // A biblioteca precisa ser disponibilizada na janela principal.
+            // html2pdf trabalha com o elemento da janela temporária.
+            await window.html2pdf()
                 .set({
                     margin: 0,
-                    filename: nomeArquivo,
-                    image: {
-                        type: "jpeg",
-                        quality: 0.98
-                    },
+                    filename: nome,
+                    image: { type: "jpeg", quality: 0.98 },
                     html2canvas: {
                         scale: 2,
-                        useCORS: true,
                         backgroundColor: "#ffffff",
+                        useCORS: true,
                         logging: true,
+                        windowWidth: 794,
                         scrollX: 0,
                         scrollY: 0
                     },
@@ -141,29 +281,21 @@ document.addEventListener("DOMContentLoaded", function () {
                     },
                     pagebreak: {
                         mode: ["css", "legacy"],
-                        avoid: [
-                            ".kpi-card",
-                            ".pdf-section",
-                            ".pdf-signature-section"
-                        ]
+                        avoid: [".kpi-card", ".pdf-signature-section"]
                     }
                 })
-                .from(copiaPDF)
+                .from(relatorio)
                 .save();
 
-            alert("PDF gerado! Confira seus downloads.");
+            alert("PDF gerado. Confira seus downloads.");
 
         } catch (erro) {
-            console.error("Erro ao gerar PDF:", erro);
-
-            alert(
-                "Não foi possível gerar o PDF. " +
-                "Abra o Console do navegador (F12) e confira o erro."
-            );
-
+            console.error("SHIFT PDF:", erro);
+            alert("Falha ao gerar PDF:\n" + erro.message);
         } finally {
-            if (copiaPDF) copiaPDF.remove();
-
+            if (janelaPDF && !janelaPDF.closed) {
+                janelaPDF.close();
+            }
             botao.disabled = false;
             botao.textContent = textoOriginal;
         }
