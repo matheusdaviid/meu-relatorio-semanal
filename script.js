@@ -18,7 +18,7 @@ document.getElementById('btnGerarPDF').addEventListener('click', function() {
     const aprovacoes = document.getElementById('aprovacoes').value;
     const proximosPassos = document.getElementById('proximosPassos').value;
 
-    // Validação mínima
+    // Validação
     if(!dataInicio || !dataFim || !dataEnvio || !abordagens || !agenciados || !destaques || !gargalos || !aprovacoes || !proximosPassos) {
         alert("Por favor, preencha todos os campos obrigatórios (*) antes de gerar o PDF.");
         return;
@@ -31,7 +31,7 @@ document.getElementById('btnGerarPDF').addEventListener('click', function() {
         return `${dia}/${mes}/${ano}`;
     };
 
-    // 3. Injeção de dados no Template do PDF
+    // 3. Preenche os dados no TEMPLATE original
     document.getElementById('pdfDataInicio').innerText = formatarData(dataInicio);
     document.getElementById('pdfDataFim').innerText = formatarData(dataFim);
     document.getElementById('pdfDataEnvio').innerText = formatarData(dataEnvio);
@@ -49,45 +49,47 @@ document.getElementById('btnGerarPDF').addEventListener('click', function() {
     document.getElementById('pdfAprovacoes').innerText = aprovacoes;
     document.getElementById('pdfProximosPassos').innerText = proximosPassos;
 
-    // 4. Configurações do PDF
-    const elemento = document.getElementById('pdfTemplate');
+    // 4. CLONAGEM: Pega o template, clona ele e coloca em um container visível
+    const templateOriginal = document.getElementById('pdfTemplate');
+    const clone = templateOriginal.cloneNode(true);
     
-    // --- CORREÇÃO AQUI ---
-    // Força o elemento a ficar visível e na posição correta na tela para a captura
-    elemento.classList.remove('pdf-hidden');
-    elemento.style.display = 'block';
-    elemento.style.position = 'absolute';
-    elemento.style.left = '0';
-    elemento.style.top = '0';
-    elemento.style.zIndex = '9999';
-    elemento.style.opacity = '1';
-    elemento.style.width = '210mm'; // Garante a largura A4
-    // ---------------------
+    // Cria um container temporário para o clone
+    const tempContainer = document.createElement('div');
+    tempContainer.style.position = 'fixed';
+    tempContainer.style.top = '0';
+    tempContainer.style.left = '0';
+    tempContainer.style.zIndex = '-9999'; // Fica atrás de tudo, mas está "visível" pro navegador
+    tempContainer.style.opacity = '0'; // Invisível para o usuário
+    tempContainer.style.pointerEvents = 'none';
+    tempContainer.appendChild(clone);
+    
+    // Adiciona o container temporário ao corpo da página
+    document.body.appendChild(tempContainer);
+    
+    // Força a exibição do clone
+    clone.style.display = 'block';
 
+    // 5. Configurações do PDF
     const opcoes = {
         margin:       0,
         filename:     `SHIFT_Relatorio_Semanal_${formatarData(dataEnvio).replace(/\//g, '-')}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
+        html2canvas:  { scale: 2, useCORS: true, logging: false, scrollY: 0 },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    // 5. Geração e Download
-    // Adicionamos um pequeno delay (setTimeout) para o navegador renderizar o layout antes de capturar
-    setTimeout(() => {
-        html2pdf().set(opcoes).from(elemento).save().then(() => {
-            // Esconde o template novamente e reseta o estilo
-            elemento.classList.add('pdf-hidden');
-            elemento.style.cssText = ''; // Limpa os estilos inline que forçamos
-            
-            // Limpa o formulário
-            document.getElementById('relatorioForm').reset();
-            alert("Relatório SHIFT gerado com sucesso! O formulário foi limpo.");
-        }).catch(err => {
-            console.error("Erro ao gerar PDF: ", err);
-            elemento.classList.add('pdf-hidden');
-            elemento.style.cssText = ''; 
-            alert("Ocorreu um erro ao gerar o PDF. Verifique o console (F12).");
-        });
-    }, 500); // 500ms de delay é suficiente para a renderização
+    // 6. Gera o PDF a partir do CLONE
+    html2pdf().set(opcoes).from(clone).save().then(() => {
+        // Sucesso! Remove o container temporário
+        document.body.removeChild(tempContainer);
+        document.getElementById('relatorioForm').reset();
+        alert("Relatório SHIFT gerado com sucesso! O formulário foi limpo.");
+    }).catch(err => {
+        console.error("Erro ao gerar PDF: ", err);
+        // Remove o container mesmo em caso de erro
+        if (document.body.contains(tempContainer)) {
+            document.body.removeChild(tempContainer);
+        }
+        alert("Ocorreu um erro ao gerar o PDF. Verifique o console.");
+    });
 });

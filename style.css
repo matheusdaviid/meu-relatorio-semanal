@@ -40,10 +40,9 @@ body {
     font-size: 36px;
     letter-spacing: 8px;
     margin: 0;
-    color: var(--ivory); /* Cor de fallback caso o gradiente falhe */
+    color: var(--ivory);
     font-weight: 300;
     text-transform: uppercase;
-    /* Adicionando o prefixo -webkit- para compatibilidade mobile */
     background: -webkit-linear-gradient(to right, #fff, var(--silver), #fff);
     background: linear-gradient(to right, #fff, var(--silver), #fff);
     -webkit-background-clip: text;
@@ -131,7 +130,9 @@ button:active {
    ESTILOS DO PDF (A4)
    ========================================= */
 
+/* O template fica escondido na tela, mas o JS vai clonar ele para gerar o PDF */
 .pdf-container {
+    display: none;
     width: 210mm;
     min-height: 297mm;
     padding: 20mm;
@@ -141,17 +142,7 @@ button:active {
     color: #111;
 }
 
-/* CLASSE QUE ESCONDE O PDF DA TELA (Mas mantém renderizado para o html2canvas) */
-.pdf-hidden {
-    opacity: 0;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: -9999;
-    pointer-events: none;
-    width: 210mm; /* Garante a largura correta para a captura */
-}
-
+/* O resto do CSS do PDF permanece igual */
 .pdf-header {
     display: flex;
     justify-content: space-between;

@@ -85,9 +85,8 @@
         </form>
     </div>
 
-    <!-- ÁREA OCULTA ONDE O PDF É MONTADO -->
-    <!-- A classe 'pdf-hidden' mantém ele renderizado fora da tela, evitando PDF em branco -->
-    <div id="pdfTemplate" class="pdf-container pdf-hidden">
+    <!-- TEMPLATE DO PDF (Fica oculto, mas será clonado pelo JS) -->
+    <div id="pdfTemplate" class="pdf-container">
         <div class="pdf-header">
             <div class="pdf-logo">SHIFT</div>
             <div class="pdf-header-info">
