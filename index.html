@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SHIFT | Relatório Semanal</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 
@@ -16,7 +15,6 @@
         </div>
 
         <form id="relatorioForm">
-            <!-- 1. CABEÇALHO -->
             <h2>1. Identificação do Relatório</h2>
             <div class="form-grid">
                 <div>
@@ -33,7 +31,6 @@
                 </div>
             </div>
 
-            <!-- 2. RECRUTAMENTO E ONBOARDING -->
             <h2>2. Recrutamento e Onboarding</h2>
             <div class="form-grid">
                 <div>
@@ -57,7 +54,6 @@
             <label>Status do Onboarding / Dificuldades</label>
             <textarea id="statusOnboarding" rows="2" placeholder="Como está o processo de integração dos novos agenciados?"></textarea>
 
-            <!-- 3. OPERAÇÃO E DESTAQUES -->
             <h2>3. Operação e Destaques da Semana</h2>
             <label>Principais Conquistas / Destaques</label>
             <textarea id="destaques" rows="3" placeholder="O que funcionou muito bem esta semana? Quais foram os pontos altos?" required></textarea>
@@ -65,7 +61,6 @@
             <label>Volume de Atendimentos / Produção</label>
             <textarea id="producao" rows="2" placeholder="Resumo da produção da equipe (ex: ensaios, eventos, conteúdos)."></textarea>
 
-            <!-- 4. GARGALOS E RISCOS -->
             <h2>4. Gargalos e Análise de Riscos</h2>
             <label>Gargalos da Operação</label>
             <textarea id="gargalos" rows="3" placeholder="O que travou a operação? (Ex: Falta de editor, estúdio ocupado, etc)." required></textarea>
@@ -73,7 +68,6 @@
             <label>Riscos Identificados (Compliance / Segurança)</label>
             <textarea id="riscos" rows="2" placeholder="Algum risco à segurança ou conformidade da operação?"></textarea>
 
-            <!-- 5. APROVAÇÕES E PRÓXIMOS PASSOS -->
             <h2>5. Aprovações e Planejamento</h2>
             <label>Aprovações Pendentes (CEOs / Gestão)</label>
             <textarea id="aprovacoes" rows="3" placeholder="Decisões que dependem dos CEOs ou do Gestor Geral." required></textarea>
@@ -81,11 +75,11 @@
             <label>Próximos Passos e Metas (Próxima Semana)</label>
             <textarea id="proximosPassos" rows="3" placeholder="O que você pretende focar e entregar na próxima semana?" required></textarea>
 
-            <button type="button" id="btnGerarPDF">Gerar Relatório PDF</button>
+            <button type="button" id="btnGerarPDF">Gerar Relatório PDF (Salvar como PDF)</button>
         </form>
     </div>
 
-    <!-- TEMPLATE DO PDF (Escondido por padrão, mas o JS vai mostrar para gerar) -->
+    <!-- TEMPLATE DO PDF (Fica escondido na tela, mas aparece na impressão) -->
     <div id="pdfTemplate" class="pdf-container">
         <div class="pdf-header">
             <div class="pdf-logo">SHIFT</div>

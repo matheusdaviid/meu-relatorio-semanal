@@ -127,158 +127,71 @@ button:active {
 }
 
 /* =========================================
-   ESTILOS DO PDF (A4)
+   ESTILOS DO PDF (A4) - VISÍVEL SÓ NA IMPRESSÃO
    ========================================= */
 
 .pdf-container {
-    display: none; /* Escondido por padrão */
-    width: 210mm;
-    min-height: 297mm;
-    padding: 20mm;
-    background: #fff;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    color: #111;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 9999;
+    display: none; /* Escondido na tela */
 }
 
-.pdf-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    border-bottom: 3px solid #090909;
-    padding-bottom: 10px;
-    margin-bottom: 25px;
-}
+.pdf-header { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid #090909; padding-bottom: 10px; margin-bottom: 25px; }
+.pdf-logo { font-size: 28px; font-weight: 300; letter-spacing: 6px; color: #090909; text-transform: uppercase; }
+.pdf-header-info { text-align: right; }
+.pdf-header-info h1 { font-size: 16px; margin: 0 0 5px 0; color: #710F27; text-transform: uppercase; letter-spacing: 1px; }
+.pdf-header-info p { font-size: 11px; color: #555; margin: 0; }
+.pdf-kpi-grid { display: flex; gap: 10px; margin-bottom: 30px; }
+.kpi-card { flex: 1; border: 1px solid #ddd; border-top: 4px solid #710F27; padding: 15px 10px; text-align: center; background: #f9f9f9; }
+.kpi-card h4 { margin: 0 0 8px 0; font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+.kpi-number { font-size: 24px; font-weight: bold; color: #090909; margin: 0; }
+.pdf-section { margin-bottom: 25px; page-break-inside: avoid; }
+.pdf-section h3 { font-size: 12px; color: #fff; background-color: #090909; padding: 8px 12px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+.pdf-section p { font-size: 12px; line-height: 1.6; white-space: pre-wrap; margin-bottom: 10px; color: #333; }
+.pdf-section p strong { color: #710F27; }
+.pdf-signature-section { margin-top: 50px; margin-bottom: 30px; text-align: center; page-break-inside: avoid; }
+.signature-line { width: 250px; height: 1px; background-color: #090909; margin: 0 auto 10px auto; }
+.signature-info p { margin: 0; font-size: 12px; color: #333; }
+.signature-name { font-weight: bold; font-size: 14px; color: #090909; text-transform: uppercase; letter-spacing: 1px; }
+.signature-role { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+.pdf-footer { margin-top: 30px; border-top: 1px solid #ddd; padding-top: 15px; font-size: 10px; color: #888; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
 
-.pdf-logo {
-    font-size: 28px;
-    font-weight: 300;
-    letter-spacing: 6px;
-    color: #090909;
-    text-transform: uppercase;
-}
+/* =========================================
+   REGRAS DE IMPRESSÃO (O SEGREDO DO PDF)
+   ========================================= */
+@media print {
+    @page {
+        size: A4;
+        margin: 0;
+    }
+    
+    body {
+        background: #fff !important;
+        color: #000 !important;
+        margin: 0;
+        padding: 0;
+        -webkit-print-color-adjust: exact !important; /* Garante que as cores de fundo apareçam */
+        print-color-adjust: exact !important;
+    }
 
-.pdf-header-info {
-    text-align: right;
-}
+    /* Esconde o formulário inteiro */
+    .container {
+        display: none !important;
+    }
 
-.pdf-header-info h1 {
-    font-size: 16px;
-    margin: 0 0 5px 0;
-    color: #710F27;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
+    /* Mostra o template do PDF */
+    .pdf-container {
+        display: block !important;
+        width: 210mm;
+        min-height: 297mm;
+        padding: 20mm;
+        background: #fff !important;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        color: #111 !important;
+        position: static;
+    }
 
-.pdf-header-info p {
-    font-size: 11px;
-    color: #555;
-    margin: 0;
-}
-
-.pdf-kpi-grid {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 30px;
-}
-
-.kpi-card {
-    flex: 1;
-    border: 1px solid #ddd;
-    border-top: 4px solid #710F27;
-    padding: 15px 10px;
-    text-align: center;
-    background: #f9f9f9;
-}
-
-.kpi-card h4 {
-    margin: 0 0 8px 0;
-    font-size: 10px;
-    color: #555;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.kpi-number {
-    font-size: 24px;
-    font-weight: bold;
-    color: #090909;
-    margin: 0;
-}
-
-.pdf-section {
-    margin-bottom: 25px;
-    page-break-inside: avoid;
-}
-
-.pdf-section h3 {
-    font-size: 12px;
-    color: #fff;
-    background-color: #090909;
-    padding: 8px 12px;
-    margin-bottom: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.pdf-section p {
-    font-size: 12px;
-    line-height: 1.6;
-    white-space: pre-wrap;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.pdf-section p strong {
-    color: #710F27;
-}
-
-.pdf-signature-section {
-    margin-top: 50px;
-    margin-bottom: 30px;
-    text-align: center;
-    page-break-inside: avoid;
-}
-
-.signature-line {
-    width: 250px;
-    height: 1px;
-    background-color: #090909;
-    margin: 0 auto 10px auto;
-}
-
-.signature-info p {
-    margin: 0;
-    font-size: 12px;
-    color: #333;
-}
-
-.signature-name {
-    font-weight: bold;
-    font-size: 14px;
-    color: #090909;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.signature-role {
-    font-size: 11px;
-    color: #666;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.pdf-footer {
-    margin-top: 30px;
-    border-top: 1px solid #ddd;
-    padding-top: 15px;
-    font-size: 10px;
-    color: #888;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    .pdf-logo { color: #090909 !important; }
+    .pdf-header-info h1 { color: #710F27 !important; }
+    .kpi-card { background: #f9f9f9 !important; border: 1px solid #ddd !important; }
+    .pdf-section h3 { background-color: #090909 !important; color: #fff !important; }
 }
