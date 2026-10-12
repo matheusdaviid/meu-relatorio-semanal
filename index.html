@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHIFT | Relatório Semanal</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-logo">
+            <h1>SHIFT</h1>
+            <p>Private Entertainment | Relatório Semanal</p>
+        </div>
+
+        <form id="relatorioForm">
+            <!-- 1. CABEÇALHO -->
+            <h2>1. Identificação do Relatório</h2>
+            <div class="form-grid">
+                <div>
+                    <label>Início do Período</label>
+                    <input type="date" id="dataInicio" required>
+                </div>
+                <div>
+                    <label>Fim do Período</label>
+                    <input type="date" id="dataFim" required>
+                </div>
+                <div>
+                    <label>Data de Envio</label>
+                    <input type="date" id="dataEnvio" required>
+                </div>
+            </div>
+
+            <!-- 2. RECRUTAMENTO E ONBOARDING -->
+            <h2>2. Recrutamento e Onboarding</h2>
+            <div class="form-grid">
+                <div>
+                    <label>Abordagens Realizadas</label>
+                    <input type="number" id="abordagens" placeholder="Qtd. contatados" required>
+                </div>
+                <div>
+                    <label>Novos Agenciados</label>
+                    <input type="number" id="agenciados" placeholder="Qtd. fechados" required>
+                </div>
+                <div>
+                    <label>Taxa de Conversão (%)</label>
+                    <input type="number" id="conversao" placeholder="Ex: 15" required>
+                </div>
+                <div>
+                    <label>Novos Talentos em Onboarding</label>
+                    <input type="number" id="onboarding" placeholder="Qtd. em processo" required>
+                </div>
+            </div>
+
+            <label>Status do Onboarding / Dificuldades</label>
+            <textarea id="statusOnboarding" rows="2" placeholder="Como está o processo de integração dos novos agenciados?"></textarea>
+
+            <!-- 3. OPERAÇÃO E DESTAQUES -->
+            <h2>3. Operação e Destaques da Semana</h2>
+            <label>Principais Conquistas / Destaques</label>
+            <textarea id="destaques" rows="3" placeholder="O que funcionou muito bem esta semana? Quais foram os pontos altos?" required></textarea>
+
+            <label>Volume de Atendimentos / Produção</label>
+            <textarea id="producao" rows="2" placeholder="Resumo da produção da equipe (ex: ensaios, eventos, conteúdos)."></textarea>
+
+            <!-- 4. GARGALOS E RISCOS -->
+            <h2>4. Gargalos e Análise de Riscos</h2>
+            <label>Gargalos da Operação</label>
+            <textarea id="gargalos" rows="3" placeholder="O que travou a operação? (Ex: Falta de editor, estúdio ocupado, etc)." required></textarea>
+
+            <label>Riscos Identificados (Compliance / Segurança)</label>
+            <textarea id="riscos" rows="2" placeholder="Algum risco à segurança ou conformidade da operação?"></textarea>
+
+            <!-- 5. APROVAÇÕES E PRÓXIMOS PASSOS -->
+            <h2>5. Aprovações e Planejamento</h2>
+            <label>Aprovações Pendentes (CEOs / Gestão)</label>
+            <textarea id="aprovacoes" rows="3" placeholder="Decisões que dependem dos CEOs ou do Gestor Geral." required></textarea>
+
+            <label>Próximos Passos e Metas (Próxima Semana)</label>
+            <textarea id="proximosPassos" rows="3" placeholder="O que você pretende focar e entregar na próxima semana?" required></textarea>
+
+            <button type="button" id="btnGerarPDF">Gerar Relatório PDF</button>
+        </form>
+    </div>
+
+    <!-- ÁREA OCULTA ONDE O PDF É MONTADO -->
+    <!-- A classe 'pdf-hidden' mantém ele renderizado fora da tela, evitando PDF em branco -->
+    <div id="pdfTemplate" class="pdf-container pdf-hidden">
+        <div class="pdf-header">
+            <div class="pdf-logo">SHIFT</div>
+            <div class="pdf-header-info">
+                <h1>Relatório de Operações Semanal</h1>
+                <p>Período: <span id="pdfDataInicio"></span> a <span id="pdfDataFim"></span> | Emitido em: <span id="pdfDataEnvio"></span></p>
+            </div>
+        </div>
+
+        <div class="pdf-kpi-grid">
+            <div class="kpi-card">
+                <h4>Abordagens</h4>
+                <p class="kpi-number" id="pdfAbordagens">0</p>
+            </div>
+            <div class="kpi-card">
+                <h4>Novos Agenciados</h4>
+                <p class="kpi-number" id="pdfAgenciados">0</p>
+            </div>
+            <div class="kpi-card">
+                <h4>Conversão</h4>
+                <p class="kpi-number" id="pdfConversao">0%</p>
+            </div>
+            <div class="kpi-card">
+                <h4>Onboarding</h4>
+                <p class="kpi-number" id="pdfOnboarding">0</p>
+            </div>
+        </div>
+
+        <div class="pdf-section">
+            <h3>1. Recrutamento e Onboarding</h3>
+            <p><strong>Status do Onboarding:</strong> <span id="pdfStatusOnboarding"></span></p>
+        </div>
+
+        <div class="pdf-section">
+            <h3>2. Operação e Destaques</h3>
+            <p><strong>Principais Conquistas:</strong><br> <span id="pdfDestaques"></span></p>
+            <p><strong>Volume de Produção:</strong><br> <span id="pdfProducao"></span></p>
+        </div>
+
+        <div class="pdf-section">
+            <h3>3. Gargalos e Riscos</h3>
+            <p><strong>Gargalos Operacionais:</strong><br> <span id="pdfGargalos"></span></p>
+            <p><strong>Riscos Identificados:</strong><br> <span id="pdfRiscos"></span></p>
+        </div>
+
+        <div class="pdf-section">
+            <h3>4. Aprovações e Planejamento</h3>
+            <p><strong>Aprovações Pendentes:</strong><br> <span id="pdfAprovacoes"></span></p>
+            <p><strong>Próximos Passos (Metas):</strong><br> <span id="pdfProximosPassos"></span></p>
+        </div>
+
+        <div class="pdf-signature-section">
+            <div class="signature-line"></div>
+            <div class="signature-info">
+                <p class="signature-name">Matheus David</p>
+                <p class="signature-role">Gestor Web | SHIFT Private Entertainment</p>
+            </div>
+        </div>
+
+        <div class="pdf-footer">
+            <p>SHIFT - Private Entertainment | Documento Confidencial</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
