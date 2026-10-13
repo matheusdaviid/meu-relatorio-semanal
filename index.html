@@ -38,7 +38,7 @@
         <div class="form-grid">
             <div><label for="modalidadeProducao">Produção para páginas SHIFT</label><input type="number" id="modalidadeProducao" min="0" step="1" placeholder="Pessoas nesta modalidade"></div>
             <div><label for="modalidadeAgenciamento">Agenciamento</label><input type="number" id="modalidadeAgenciamento" min="0" step="1" placeholder="Pessoas nesta modalidade"></div>
-            <div><label for="modalidadeBoate">Encaminhamento para Boate</label><input type="number" id="modalidadeBoate" min="0" step="1" placeholder="Pessoas nesta modalidade"></div>
+            <div><label for="modalidadeBoate">Encaminhamento para BT</label><input type="number" id="modalidadeBoate" min="0" step="1" placeholder="Pessoas nesta modalidade"></div>
             <div><label for="pessoasModalidadesUnicas">Pessoas únicas com modalidade definida</label><input type="number" id="pessoasModalidadesUnicas" min="0" step="1" placeholder="Opcional, sem duplicar pessoas"></div>
         </div>
 
@@ -61,7 +61,7 @@
         <label for="observacaoPublicacoes">Observações sobre publicações (opcional)</label>
         <textarea id="observacaoPublicacoes" rows="2" placeholder="Informe contexto se necessário; não precisa atribuir a publicação à gravação da mesma semana."></textarea>
 
-        <h2>6. Encaminhamentos para a Boate</h2>
+        <h2>6. Encaminhamentos para a BT</h2>
         <div class="form-grid">
             <div><label for="encaminhamentosEnviados">Encaminhamentos enviados</label><input type="number" id="encaminhamentosEnviados" min="0" step="1" placeholder="Quantidade"></div>
             <div><label for="encaminhamentosRecebidos">Recebidos pelo gerente físico</label><input type="number" id="encaminhamentosRecebidos" min="0" step="1" placeholder="Quantidade confirmada"></div>
@@ -144,7 +144,7 @@
             <div class="bar-chart">
                 <div class="bar-row"><span>Produção SHIFT</span><div class="bar-track"><div id="barraModalidadeProducao" class="bar-fill bar-black"></div></div><strong id="valorModalidadeProducao">—</strong></div>
                 <div class="bar-row"><span>Agenciamento</span><div class="bar-track"><div id="barraModalidadeAgenciamento" class="bar-fill bar-wine"></div></div><strong id="valorModalidadeAgenciamento">—</strong></div>
-                <div class="bar-row"><span>Boate</span><div class="bar-track"><div id="barraModalidadeBoate" class="bar-fill bar-silver"></div></div><strong id="valorModalidadeBoate">—</strong></div>
+                <div class="bar-row"><span>BT</span><div class="bar-track"><div id="barraModalidadeBoate" class="bar-fill bar-silver"></div></div><strong id="valorModalidadeBoate">—</strong></div>
             </div>
             <div class="chart-footnote" id="notaModalidades">Dados de modalidades conforme preenchimento.</div>
         </div>
@@ -181,7 +181,7 @@
                 <div class="metric-strip compact"><div><span>Conclusão informada</span><strong id="taxaPublicacoes">—</strong></div></div>
             </div>
             <div class="chart-card">
-                <h3>Encaminhamentos à Boate</h3>
+                <h3>Encaminhamentos à BT</h3>
                 <div class="mini-stat"><span>Enviados</span><strong id="pdfEncaminhamentosEnviados">—</strong></div>
                 <div class="mini-stat"><span>Recebidos</span><strong id="pdfEncaminhamentosRecebidos">—</strong></div>
                 <div class="mini-stat"><span>Aguardando confirmação</span><strong id="pdfEncaminhamentosPendentes">—</strong></div>

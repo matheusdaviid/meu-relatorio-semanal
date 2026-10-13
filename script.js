@@ -165,10 +165,11 @@ document.addEventListener("DOMContentLoaded", () => {
             copia = template.cloneNode(true);
             copia.removeAttribute("id");
 
+            // Posiciona a cópia FORA da tela (escondida) para que o html2canvas possa capturá-la
             Object.assign(copia.style, {
                 display: "block",
                 position: "fixed",
-                left: "0",
+                left: "-9999px",
                 top: "0",
                 width: "794px",
                 height: "auto",
@@ -183,7 +184,9 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             document.body.appendChild(copia);
-            await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+            // Aguarda um pequeno delay para garantir que tudo (incluindo imagens) carregue
+            await new Promise(resolve => setTimeout(resolve, 600));
 
             const canvas = await window.html2canvas(copia, {
                 scale: 2,
@@ -226,7 +229,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const nome = `SHIFT_Relatorio_Semanal_${valor("dataInicio")}_${valor("dataFim")}.pdf`;
             pdf.save(nome);
-            alert("PDF criado. Abra o arquivo baixado para conferir.");
         } catch (erro) {
             console.error("Erro na geração do PDF:", erro);
             alert("Falha ao gerar o PDF:\n" + erro.message);
