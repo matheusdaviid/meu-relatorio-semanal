@@ -7,143 +7,262 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <div class="container">
-        <div class="header-logo">
-            <h1>SHIFT</h1>
-            <p>Private Entertainment | Relatório Semanal</p>
-        </div>
-
-        <form id="relatorioForm">
-            <h2>1. Identificação do Relatório</h2>
-            <div class="form-grid">
-                <div>
-                    <label>Início do Período</label>
-                    <input type="date" id="dataInicio" required>
-                </div>
-                <div>
-                    <label>Fim do Período</label>
-                    <input type="date" id="dataFim" required>
-                </div>
-                <div>
-                    <label>Data de Envio</label>
-                    <input type="date" id="dataEnvio" required>
-                </div>
-            </div>
-
-            <h2>2. Recrutamento e Onboarding</h2>
-            <div class="form-grid">
-                <div>
-                    <label>Abordagens Realizadas</label>
-                    <input type="number" id="abordagens" placeholder="Qtd. contatados" required>
-                </div>
-                <div>
-                    <label>Novos Agenciados</label>
-                    <input type="number" id="agenciados" placeholder="Qtd. fechados" required>
-                </div>
-                <div>
-                    <label>Taxa de Conversão (%)</label>
-                    <input type="number" id="conversao" placeholder="Ex: 15" required>
-                </div>
-                <div>
-                    <label>Novos Talentos em Onboarding</label>
-                    <input type="number" id="onboarding" placeholder="Qtd. em processo" required>
-                </div>
-            </div>
-
-            <label>Status do Onboarding / Dificuldades</label>
-            <textarea id="statusOnboarding" rows="2" placeholder="Como está o processo de integração dos novos agenciados?"></textarea>
-
-            <h2>3. Operação e Destaques da Semana</h2>
-            <label>Principais Conquistas / Destaques</label>
-            <textarea id="destaques" rows="3" placeholder="O que funcionou muito bem esta semana? Quais foram os pontos altos?" required></textarea>
-
-            <label>Volume de Atendimentos / Produção</label>
-            <textarea id="producao" rows="2" placeholder="Resumo da produção da equipe (ex: ensaios, eventos, conteúdos)."></textarea>
-
-            <h2>4. Gargalos e Análise de Riscos</h2>
-            <label>Gargalos da Operação</label>
-            <textarea id="gargalos" rows="3" placeholder="O que travou a operação? (Ex: Falta de editor, estúdio ocupado, etc)." required></textarea>
-
-            <label>Riscos Identificados (Compliance / Segurança)</label>
-            <textarea id="riscos" rows="2" placeholder="Algum risco à segurança ou conformidade da operação?"></textarea>
-
-            <h2>5. Aprovações e Planejamento</h2>
-            <label>Aprovações Pendentes (CEOs / Gestão)</label>
-            <textarea id="aprovacoes" rows="3" placeholder="Decisões que dependem dos CEOs ou do Gestor Geral." required></textarea>
-
-            <label>Próximos Passos e Metas (Próxima Semana)</label>
-            <textarea id="proximosPassos" rows="3" placeholder="O que você pretende focar e entregar na próxima semana?" required></textarea>
-
-            <button type="button" id="btnGerarPDF">Gerar Relatório PDF (Salvar como PDF)</button>
-        </form>
+<div class="container">
+    <div class="header-logo">
+        <h1>SHIFT</h1>
+        <p>Private Entertainment | Relatório Semanal</p>
     </div>
 
-    <!-- TEMPLATE DO PDF (Fica escondido na tela, mas aparece na impressão) -->
-    <div id="pdfTemplate" class="pdf-container">
-        <div class="pdf-header">
-            <div class="pdf-logo">SHIFT</div>
-            <div class="pdf-header-info">
-                <h1>Relatório de Operações Semanal</h1>
-                <p>Período: <span id="pdfDataInicio"></span> a <span id="pdfDataFim"></span> | Emitido em: <span id="pdfDataEnvio"></span></p>
-            </div>
+    <form id="relatorioForm">
+        <h2>1. Identificação do Relatório</h2>
+        <div class="form-grid">
+            <div><label for="dataInicio">Início do período</label><input type="date" id="dataInicio" required></div>
+            <div><label for="dataFim">Fim do período</label><input type="date" id="dataFim" required></div>
+            <div><label for="dataEnvio">Data de envio</label><input type="date" id="dataEnvio" required></div>
         </div>
 
-        <div class="pdf-kpi-grid">
-            <div class="kpi-card">
-                <h4>Abordagens</h4>
-                <p class="kpi-number" id="pdfAbordagens">0</p>
-            </div>
-            <div class="kpi-card">
-                <h4>Novos Agenciados</h4>
-                <p class="kpi-number" id="pdfAgenciados">0</p>
-            </div>
-            <div class="kpi-card">
-                <h4>Conversão</h4>
-                <p class="kpi-number" id="pdfConversao">0%</p>
-            </div>
-            <div class="kpi-card">
-                <h4>Onboarding</h4>
-                <p class="kpi-number" id="pdfOnboarding">0</p>
-            </div>
+        <h2>2. Recrutamento e integração</h2>
+        <div class="form-grid">
+            <div><label for="abordagens">Novos contatos abordados</label><input type="number" id="abordagens" min="0" step="1" placeholder="Ex.: 30" required></div>
+            <div><label for="agenciados">Novos agenciados confirmados</label><input type="number" id="agenciados" min="0" step="1" placeholder="Ex.: 5" required></div>
+            <div><label for="onboarding">Pessoas em onboarding</label><input type="number" id="onboarding" min="0" step="1" placeholder="Ex.: 3" required></div>
+            <div><label for="carteiraAtiva">Carteira ativa de agenciados</label><input type="number" id="carteiraAtiva" min="0" step="1" placeholder="Total ativo"></div>
+            <div><label for="agenciadosPausados">Agenciados pausados</label><input type="number" id="agenciadosPausados" min="0" step="1" placeholder="Quantidade"></div>
+            <div><label for="agenciadosDesligados">Agenciados desligados na semana</label><input type="number" id="agenciadosDesligados" min="0" step="1" placeholder="Quantidade"></div>
+        </div>
+        <label for="statusOnboarding">Status do onboarding / dificuldades</label>
+        <textarea id="statusOnboarding" rows="2" placeholder="Integrações em andamento, documentos ou etapas pendentes."></textarea>
+
+        <h2>3. Distribuição por modalidade</h2>
+        <p class="form-help">Conte cada pessoa em todas as modalidades que ela escolheu. Uma pessoa pode aparecer em mais de uma categoria; por isso, a soma pode ser maior que a quantidade de pessoas únicas.</p>
+        <div class="form-grid">
+            <div><label for="modalidadeProducao">Produção para páginas SHIFT</label><input type="number" id="modalidadeProducao" min="0" step="1" placeholder="Pessoas nesta modalidade"></div>
+            <div><label for="modalidadeAgenciamento">Agenciamento</label><input type="number" id="modalidadeAgenciamento" min="0" step="1" placeholder="Pessoas nesta modalidade"></div>
+            <div><label for="modalidadeBoate">Encaminhamento para Boate</label><input type="number" id="modalidadeBoate" min="0" step="1" placeholder="Pessoas nesta modalidade"></div>
+            <div><label for="pessoasModalidadesUnicas">Pessoas únicas com modalidade definida</label><input type="number" id="pessoasModalidadesUnicas" min="0" step="1" placeholder="Opcional, sem duplicar pessoas"></div>
         </div>
 
-        <div class="pdf-section">
-            <h3>1. Recrutamento e Onboarding</h3>
-            <p><strong>Status do Onboarding:</strong> <span id="pdfStatusOnboarding"></span></p>
+        <h2>4. Agenda e conclusão das gravações</h2>
+        <div class="form-grid">
+            <div><label for="gravacoesAgendadas">Gravações agendadas</label><input type="number" id="gravacoesAgendadas" min="0" step="1" placeholder="Quantidade"></div>
+            <div><label for="gravacoesRealizadas">Gravações realizadas</label><input type="number" id="gravacoesRealizadas" min="0" step="1" placeholder="Quantidade"></div>
+            <div><label for="gravacoesCanceladas">Gravações canceladas</label><input type="number" id="gravacoesCanceladas" min="0" step="1" placeholder="Quantidade"></div>
+            <div><label for="gravacoesRemarcadas">Gravações remarcadas</label><input type="number" id="gravacoesRemarcadas" min="0" step="1" placeholder="Quantidade"></div>
         </div>
+        <label for="statusGravacoes">Observações sobre agenda e gravações</label>
+        <textarea id="statusGravacoes" rows="2" placeholder="Ex.: faltas, disponibilidade, equipe, local ou motivo de remarcações."></textarea>
 
-        <div class="pdf-section">
-            <h3>2. Operação e Destaques</h3>
-            <p><strong>Principais Conquistas:</strong><br> <span id="pdfDestaques"></span></p>
-            <p><strong>Volume de Produção:</strong><br> <span id="pdfProducao"></span></p>
+        <h2>5. Publicações (dados disponíveis)</h2>
+        <p class="form-help">Preencha apenas se você tiver acesso a esses números. As publicações podem corresponder a gravações de semanas anteriores.</p>
+        <div class="form-grid">
+            <div><label for="publicacoesPlanejadas">Publicações previstas no período</label><input type="number" id="publicacoesPlanejadas" min="0" step="1" placeholder="Opcional"></div>
+            <div><label for="publicacoesRealizadas">Publicações realizadas no período</label><input type="number" id="publicacoesRealizadas" min="0" step="1" placeholder="Opcional"></div>
         </div>
+        <label for="observacaoPublicacoes">Observações sobre publicações (opcional)</label>
+        <textarea id="observacaoPublicacoes" rows="2" placeholder="Informe contexto se necessário; não precisa atribuir a publicação à gravação da mesma semana."></textarea>
 
-        <div class="pdf-section">
-            <h3>3. Gargalos e Riscos</h3>
-            <p><strong>Gargalos Operacionais:</strong><br> <span id="pdfGargalos"></span></p>
-            <p><strong>Riscos Identificados:</strong><br> <span id="pdfRiscos"></span></p>
+        <h2>6. Encaminhamentos para a Boate</h2>
+        <div class="form-grid">
+            <div><label for="encaminhamentosEnviados">Encaminhamentos enviados</label><input type="number" id="encaminhamentosEnviados" min="0" step="1" placeholder="Quantidade"></div>
+            <div><label for="encaminhamentosRecebidos">Recebidos pelo gerente físico</label><input type="number" id="encaminhamentosRecebidos" min="0" step="1" placeholder="Quantidade confirmada"></div>
+            <div><label for="encaminhamentosPendentes">Aguardando confirmação</label><input type="number" id="encaminhamentosPendentes" min="0" step="1" placeholder="Quantidade"></div>
         </div>
+        <label for="statusEncaminhamentos">Observações sobre encaminhamentos</label>
+        <textarea id="statusEncaminhamentos" rows="2" placeholder="Status da passagem de responsabilidade ou próximos passos."></textarea>
 
-        <div class="pdf-section">
-            <h3>4. Aprovações e Planejamento</h3>
-            <p><strong>Aprovações Pendentes:</strong><br> <span id="pdfAprovacoes"></span></p>
-            <p><strong>Próximos Passos (Metas):</strong><br> <span id="pdfProximosPassos"></span></p>
+        <h2>7. Suporte e pendências operacionais</h2>
+        <p class="form-help">Use este bloco para visualizar a carga de solicitações: quantas chegaram, quantas foram resolvidas e quantas continuam abertas. Não é uma avaliação isolada de desempenho.</p>
+        <div class="form-grid">
+            <div><label for="solicitacoesRecebidas">Solicitações recebidas</label><input type="number" id="solicitacoesRecebidas" min="0" step="1" placeholder="Opcional"></div>
+            <div><label for="solicitacoesResolvidas">Solicitações resolvidas</label><input type="number" id="solicitacoesResolvidas" min="0" step="1" placeholder="Opcional"></div>
+            <div><label for="pendenciasAbertas">Pendências abertas ao fim da semana</label><input type="number" id="pendenciasAbertas" min="0" step="1" placeholder="Opcional"></div>
+            <div><label for="pendenciasAntigas">Pendências vindas de semanas anteriores</label><input type="number" id="pendenciasAntigas" min="0" step="1" placeholder="Opcional"></div>
         </div>
+        <label for="detalhesPendencias">Pendências, prioridade, responsável e prazo</label>
+        <textarea id="detalhesPendencias" rows="3" placeholder="Descreva o que está pendente, prioridade, responsável e prazo quando aplicável."></textarea>
 
-        <div class="pdf-signature-section">
-            <div class="signature-line"></div>
-            <div class="signature-info">
-                <p class="signature-name">Matheus David</p>
-                <p class="signature-role">Gestor Web | SHIFT Private Entertainment</p>
-            </div>
+        <h2>8. Conformidade e autorizações</h2>
+        <div class="form-grid">
+            <div><label for="autorizacoesVerificadas">Autorizações verificadas</label><input type="number" id="autorizacoesVerificadas" min="0" step="1" placeholder="Quantidade"></div>
+            <div><label for="autorizacoesPendentes">Autorizações pendentes</label><input type="number" id="autorizacoesPendentes" min="0" step="1" placeholder="Quantidade"></div>
+            <div><label for="atividadesBloqueadas">Atividades pausadas por verificação</label><input type="number" id="atividadesBloqueadas" min="0" step="1" placeholder="Quantidade"></div>
         </div>
+        <label for="detalhesConformidade">Observações de conformidade (sem expor dados pessoais)</label>
+        <textarea id="detalhesConformidade" rows="2" placeholder="Registre status e providências sem incluir documentos, credenciais ou dados sensíveis."></textarea>
 
-        <div class="pdf-footer">
-            <p>SHIFT - Private Entertainment | Documento Confidencial</p>
+        <h2>9. Destaques e análise da semana</h2>
+        <label for="destaques">Principais conquistas / destaques</label>
+        <textarea id="destaques" rows="3" placeholder="Resultados relevantes, avanços e entregas." required></textarea>
+        <label for="gargalos">Gargalos da operação</label>
+        <textarea id="gargalos" rows="3" placeholder="O que dificultou o andamento?"></textarea>
+        <label for="riscos">Riscos identificados / ocorrências</label>
+        <textarea id="riscos" rows="2" placeholder="Registre riscos, incidentes ou ocorrências e as providências tomadas."></textarea>
+
+        <h2>10. Aprovações e planejamento</h2>
+        <label for="aprovacoes">Aprovações pendentes dos CEOs / gestão</label>
+        <textarea id="aprovacoes" rows="3" placeholder="Decisões necessárias, motivo e prazo desejado."></textarea>
+        <label for="decisoesTomadas">Decisões tomadas na semana</label>
+        <textarea id="decisoesTomadas" rows="2" placeholder="Decisões dentro da sua autonomia e providências executadas."></textarea>
+        <label for="proximosPassos">Próximos passos e prioridades</label>
+        <textarea id="proximosPassos" rows="3" placeholder="Ações, responsáveis e metas para a próxima semana." required></textarea>
+
+        <button type="button" id="btnGerarPDF">Gerar relatório PDF</button>
+    </form>
+</div>
+
+<!-- Modelo do relatório: é clonado pelo JavaScript para gerar o PDF. -->
+<div id="pdfTemplate" class="pdf-container">
+    <div class="pdf-header">
+        <div class="pdf-logo">SHIFT</div>
+        <div class="pdf-header-info">
+            <h1>Relatório Semanal de Operações Web</h1>
+            <p>Período: <span id="pdfDataInicio"></span> a <span id="pdfDataFim"></span> | Emitido: <span id="pdfDataEnvio"></span></p>
         </div>
     </div>
 
+    <div class="executive-summary">
+        <span class="analytics-kicker">SHIFT / VISÃO EXECUTIVA</span>
+        <h2>Resumo da operação</h2>
+        <p id="pdfResumoExecutivo">Indicadores consolidados do período informado.</p>
+    </div>
+
+    <div class="pdf-kpi-grid">
+        <div class="kpi-card"><h4>Novos contatos</h4><p class="kpi-number" id="pdfAbordagens">—</p><span class="kpi-note">abordados</span></div>
+        <div class="kpi-card"><h4>Novos agenciados</h4><p class="kpi-number" id="pdfAgenciados">—</p><span class="kpi-note">confirmados</span></div>
+        <div class="kpi-card"><h4>Gravações realizadas</h4><p class="kpi-number" id="pdfGravacoesRealizadas">—</p><span class="kpi-note">no período</span></div>
+        <div class="kpi-card"><h4>Carteira ativa</h4><p class="kpi-number" id="pdfCarteiraAtiva">—</p><span class="kpi-note">agenciados</span></div>
+    </div>
+
+    <div class="pdf-analytics">
+        <div class="analytics-heading">
+            <span class="analytics-kicker">01 / DISTRIBUIÇÃO</span>
+            <h2>Modalidades operacionais</h2>
+            <p>Uma pessoa pode participar de mais de uma modalidade.</p>
+        </div>
+        <div class="chart-card">
+            <h3>Distribuição por modalidade</h3>
+            <div class="bar-chart">
+                <div class="bar-row"><span>Produção SHIFT</span><div class="bar-track"><div id="barraModalidadeProducao" class="bar-fill bar-black"></div></div><strong id="valorModalidadeProducao">—</strong></div>
+                <div class="bar-row"><span>Agenciamento</span><div class="bar-track"><div id="barraModalidadeAgenciamento" class="bar-fill bar-wine"></div></div><strong id="valorModalidadeAgenciamento">—</strong></div>
+                <div class="bar-row"><span>Boate</span><div class="bar-track"><div id="barraModalidadeBoate" class="bar-fill bar-silver"></div></div><strong id="valorModalidadeBoate">—</strong></div>
+            </div>
+            <div class="chart-footnote" id="notaModalidades">Dados de modalidades conforme preenchimento.</div>
+        </div>
+
+        <div class="analytics-heading">
+            <span class="analytics-kicker">02 / EXECUÇÃO</span>
+            <h2>Agenda e conclusão das gravações</h2>
+            <p>Indicadores da etapa sob responsabilidade da gestão Web.</p>
+        </div>
+        <div class="chart-card">
+            <h3>Status das gravações</h3>
+            <div class="bar-chart">
+                <div class="bar-row"><span>Agendadas</span><div class="bar-track"><div id="barraGravacoesAgendadas" class="bar-fill bar-black"></div></div><strong id="valorGravacoesAgendadas">—</strong></div>
+                <div class="bar-row"><span>Realizadas</span><div class="bar-track"><div id="barraGravacoesRealizadas" class="bar-fill bar-wine"></div></div><strong id="valorGravacoesRealizadas">—</strong></div>
+                <div class="bar-row"><span>Canceladas</span><div class="bar-track"><div id="barraGravacoesCanceladas" class="bar-fill bar-silver"></div></div><strong id="valorGravacoesCanceladas">—</strong></div>
+                <div class="bar-row"><span>Remarcadas</span><div class="bar-track"><div id="barraGravacoesRemarcadas" class="bar-fill bar-pale"></div></div><strong id="valorGravacoesRemarcadas">—</strong></div>
+            </div>
+            <div class="metric-strip">
+                <div><span>Conclusão sobre agendadas</span><strong id="taxaConclusaoGravacoes">—</strong></div>
+                <p id="notaGravacoes">A taxa considera gravações realizadas ÷ agendadas. Interprete junto às remarcações e cancelamentos.</p>
+            </div>
+        </div>
+
+        <div class="analytics-heading">
+            <span class="analytics-kicker">03 / CONTINUIDADE</span>
+            <h2>Publicações e encaminhamentos</h2>
+            <p>Registros por período, sem presumir relação direta com gravações da mesma semana.</p>
+        </div>
+        <div class="two-charts">
+            <div class="chart-card">
+                <h3>Publicações</h3>
+                <div class="mini-stat"><span>Previstas</span><strong id="pdfPublicacoesPlanejadas">—</strong></div>
+                <div class="mini-stat"><span>Realizadas</span><strong id="pdfPublicacoesRealizadas">—</strong></div>
+                <div class="metric-strip compact"><div><span>Conclusão informada</span><strong id="taxaPublicacoes">—</strong></div></div>
+            </div>
+            <div class="chart-card">
+                <h3>Encaminhamentos à Boate</h3>
+                <div class="mini-stat"><span>Enviados</span><strong id="pdfEncaminhamentosEnviados">—</strong></div>
+                <div class="mini-stat"><span>Recebidos</span><strong id="pdfEncaminhamentosRecebidos">—</strong></div>
+                <div class="mini-stat"><span>Aguardando confirmação</span><strong id="pdfEncaminhamentosPendentes">—</strong></div>
+            </div>
+        </div>
+
+        <div class="analytics-heading">
+            <span class="analytics-kicker">04 / ACOMPANHAMENTO</span>
+            <h2>Carteira, suporte e pendências</h2>
+        </div>
+        <div class="two-charts">
+            <div class="chart-card">
+                <h3>Carteira de agenciados</h3>
+                <div class="mini-stat"><span>Ativos</span><strong id="pdfCarteiraAtiva2">—</strong></div>
+                <div class="mini-stat"><span>Pausados</span><strong id="pdfAgenciadosPausados">—</strong></div>
+                <div class="mini-stat"><span>Desligados na semana</span><strong id="pdfAgenciadosDesligados">—</strong></div>
+            </div>
+            <div class="chart-card">
+                <h3>Solicitações e pendências</h3>
+                <div class="mini-stat"><span>Solicitações recebidas</span><strong id="pdfSolicitacoesRecebidas">—</strong></div>
+                <div class="mini-stat"><span>Resolvidas</span><strong id="pdfSolicitacoesResolvidas">—</strong></div>
+                <div class="mini-stat"><span>Pendências abertas</span><strong id="pdfPendenciasAbertas">—</strong></div>
+                <div class="mini-stat"><span>De semanas anteriores</span><strong id="pdfPendenciasAntigas">—</strong></div>
+                <div class="metric-strip compact"><div><span>Taxa de resolução</span><strong id="taxaResolucao">—</strong></div></div>
+            </div>
+        </div>
+
+        <div class="analytics-heading">
+            <span class="analytics-kicker">05 / CONTROLE</span>
+            <h2>Conformidade e autorizações</h2>
+        </div>
+        <div class="chart-card">
+            <div class="compliance-grid">
+                <div><span>Autorizações verificadas</span><strong id="pdfAutorizacoesVerificadas">—</strong></div>
+                <div><span>Autorizações pendentes</span><strong id="pdfAutorizacoesPendentes">—</strong></div>
+                <div><span>Atividades pausadas para verificação</span><strong id="pdfAtividadesBloqueadas">—</strong></div>
+            </div>
+            <p class="safety-note">Atividades devem permanecer pausadas sempre que houver dúvida sobre maioridade, consentimento, autorização ou direito de uso. Não incluir dados pessoais ou documentos neste relatório.</p>
+        </div>
+    </div>
+
+    <div class="pdf-section">
+        <h3>1. Recrutamento e onboarding</h3>
+        <p><strong>Status / dificuldades:</strong><br><span id="pdfStatusOnboarding"></span></p>
+    </div>
+    <div class="pdf-section">
+        <h3>2. Agenda e produção sob gestão Web</h3>
+        <p><strong>Observações sobre gravações:</strong><br><span id="pdfStatusGravacoes"></span></p>
+        <p><strong>Observações sobre publicações:</strong><br><span id="pdfObservacaoPublicacoes"></span></p>
+        <p><strong>Observações sobre encaminhamentos:</strong><br><span id="pdfStatusEncaminhamentos"></span></p>
+    </div>
+    <div class="pdf-section">
+        <h3>3. Suporte e pendências operacionais</h3>
+        <p><strong>Detalhes das pendências:</strong><br><span id="pdfDetalhesPendencias"></span></p>
+    </div>
+    <div class="pdf-section">
+        <h3>4. Conformidade e autorizações</h3>
+        <p><strong>Observações:</strong><br><span id="pdfDetalhesConformidade"></span></p>
+    </div>
+    <div class="pdf-section">
+        <h3>5. Destaques, gargalos e riscos</h3>
+        <p><strong>Conquistas / destaques:</strong><br><span id="pdfDestaques"></span></p>
+        <p><strong>Gargalos:</strong><br><span id="pdfGargalos"></span></p>
+        <p><strong>Riscos / ocorrências:</strong><br><span id="pdfRiscos"></span></p>
+    </div>
+    <div class="pdf-section">
+        <h3>6. Decisões, aprovações e próximos passos</h3>
+        <p><strong>Decisões tomadas:</strong><br><span id="pdfDecisoesTomadas"></span></p>
+        <p><strong>Aprovações pendentes:</strong><br><span id="pdfAprovacoes"></span></p>
+        <p><strong>Próximas prioridades:</strong><br><span id="pdfProximosPassos"></span></p>
+    </div>
+
+    <div class="pdf-signature-section">
+        <div class="signature-line"></div>
+        <div class="signature-info">
+            <p class="signature-name">Matheus David</p>
+            <p class="signature-role">Gestor Web | SHIFT Private Entertainment</p>
+        </div>
+    </div>
+    <div class="pdf-footer"><p>SHIFT — Private Entertainment | Documento confidencial de operação</p></div>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
